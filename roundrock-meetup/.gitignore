@@ -1,0 +1,6 @@
+# Local working files
+*.local.md
+
+# Tool state
+.rad/
+.gitsigners

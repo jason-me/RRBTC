@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+# run_hashguard.sh.example
+#
+# Copy this to run_hashguard.sh, fill in your values, and chmod +x it.
+# NEVER commit run_hashguard.sh — it contains your secrets.
+# Add run_hashguard.sh to .gitignore.
+#
+# Credential options (choose one):
+#
+#   Option A — Bitwarden (recommended):
+#     Store token in Bitwarden as "Braiins Hashpower API"
+#     bw unlock && bw sync before running
+#     Leave BRAIINS_TOKEN unset here — hashguard.py will fetch it from bw
+#
+#   Option B — env var:
+#     Uncomment and fill in BRAIINS_TOKEN below
+#
+#   Option C — sops/age:
+#     eval $(sops -d secrets.enc.yaml)
+#     Then leave BRAIINS_TOKEN unset — sops populates the env
+
+# --- Braiins API token ---
+# Option B only — leave blank if using Bitwarden or sops
+# export BRAIINS_TOKEN=""
+
+# --- Pool / DATUM endpoint ---
+# Your stratum URL and Bitcoin payout address
+# Examples:
+#   Ocean + DATUM:   stratum+tcp://your-datum-host:23334
+#   Public Pool:     stratum+tcp://pool.public-pool.io:21496
+#   Braiins Pool:    stratum+tcp://stratum.braiins.com:3333
+export POOL_URL="stratum+tcp://YOUR_POOL_HOST:PORT"
+export POOL_IDENTITY="YOUR_BTC_ADDRESS.HashGuard"
+
+# --- Signal notifications (optional) ---
+# Remove these if you don't use Signal
+# Requires signal-cli: https://github.com/AsamK/signal-cli
+export SIGNAL_RPC_URL="http://127.0.0.1:8080/api/v1/rpc"
+export SIGNAL_ACCOUNT="+15551234567"      # your Signal phone number
+export SIGNAL_RECIPIENT="+15559876543"    # recipient phone number, or a username
+
+# --- State directory (optional) ---
+# Defaults to ~/hashguard/state/
+# export HASHGUARD_STATE_DIR="/path/to/state"
+
+# --- Run ---
+cd "$(dirname "$0")"
+exec python3 hashguard.py >> ~/hashguard/logs/hashguard.log 2>&1
